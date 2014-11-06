@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Hello User!</h1>
+  <p>There are all your notes</p>
+
+  <!-- the custom editor for the 'Light' column references the id="light" -->
+  <select name="category" id="category" style="display: none;">
+    <option value="Reference">Reference</option>
+    <option value="Note">Note</option>
+    <option value="Reminder">Reminder</option>
+    <option value="TODO">TODO</option>
+  </select>
+
+  <div id="editor-grid"></div>
+{% endblock %}
