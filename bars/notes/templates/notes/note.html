@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class = 'mynote'>
+  <h4>{{ category }}</h4>
+  <h1>{{ header }}</h1>
+  <p><i>{{ text }}</i></p>
+  <p>Last change: {{ date_time }}</p>
+  <p>{% if publish %}Published{% else %}<del>Published</del>{% endif %}</p>
+  <p>{% if favorites %}In favorites{% else %}<del>
+  In favorites</del>{% endif %}</p>
+
+</div>
+{% endblock %}

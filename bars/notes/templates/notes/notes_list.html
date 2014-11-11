@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Hello User!</h1>
+  <h1>Hello, {{ user }} !</h1>
   <p>There are all your notes</p>
 
-  <!-- the custom editor for the 'Light' column references the id="light" -->
   <select name="category" id="category" style="display: none;">
     <option value="Reference">Reference</option>
     <option value="Note">Note</option>
@@ -12,4 +11,6 @@
   </select>
 
   <div id="editor-grid"></div>
+  <br>
+  <button class='signOut'>Sign out</button>
 {% endblock %}
