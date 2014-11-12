@@ -1,4 +1,5 @@
-import datetime
+from datetime import datetime
+import json
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -6,6 +7,7 @@ from django.contrib.auth import login as auth_login
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
 from bars.notes.models import Notes
+from django.db.models import Q
 
 
 def main(request):
@@ -80,7 +82,49 @@ def notes_list(request):
 
 def get_notes(request):
     row = []
-    for obj in Notes.objects.filter(user=request.user):
+    u_notes = Notes.objects.filter(user=request.user)
+    filters = json.loads(request.POST.get('filter', '{}'))
+    if len(filters) > 0:
+        for i in range(len(filters)):
+            fltr = filters[i]['value']
+            if filters[i]['field'] == 'header':
+                u_notes = u_notes.filter(header__icontains=fltr)
+            if filters[i]['field'] == 'favorites':
+                u_notes = u_notes.filter(favorites=fltr)
+            if filters[i]['field'] == 'category':
+                if len(fltr) == 1:
+                    u_notes = u_notes.filter(category=fltr[0])
+                if len(fltr) == 2:
+                    u_notes = u_notes.filter(Q(category=fltr[0]) |
+                                             Q(category=fltr[1]))
+                if len(fltr) == 3:
+                    u_notes = u_notes.filter(Q(category=fltr[0]) |
+                                             Q(category=fltr[1]) |
+                                             Q(category=fltr[2]))
+                if len(fltr) == 4:
+                    u_notes = u_notes.filter(Q(category=fltr[0]) |
+                                             Q(category=fltr[1]) |
+                                             Q(category=fltr[2]) |
+                                             Q(category=fltr[3]))
+            if filters[i]['field'] == 'date_time':
+                fltr = datetime.strptime(fltr, '%m/%d/%Y')
+                if filters[i]['comparison'] == 'eq':
+                    fltr_range = (
+                        datetime.combine(fltr, datetime.min.time()),
+                        datetime.combine(fltr, datetime.max.time())
+                    )
+                if filters[i]['comparison'] == 'lt':
+                    fltr_range = (
+                        datetime.strptime('01/01/2000', '%m/%d/%Y'),
+                        datetime.combine(fltr, datetime.min.time())
+                    )
+                if filters[i]['comparison'] == 'gt':
+                    fltr_range = (
+                        datetime.combine(fltr, datetime.max.time()),
+                        datetime.strptime('01/01/2100', '%m/%d/%Y')
+                    )
+                u_notes = u_notes.filter(date_time__range=fltr_range)
+    for obj in u_notes:
         row.append({'header': obj.header,
                     'category': obj.category,
                     'text': obj.text,
@@ -151,7 +195,7 @@ def edit_note(request):
     text = request.POST.get('text', 'Nothing to say...')
     favorites = request.POST.get('favorites', False)
     publish = request.POST.get('publish', False)
-    date_time = datetime.datetime.now()
+    date_time = datetime.now()
     try:
         Notes.objects.filter(uu_id=uu_id).update(header=header,
                                                  category=category,

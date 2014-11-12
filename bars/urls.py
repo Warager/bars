@@ -12,7 +12,6 @@ urlpatterns = patterns('',
                        url(r'^note/(?P<uu_id>.*)$',
                            'bars.notes.views.view_note'),
                        url(r'^add_note$', 'bars.notes.views.add_note'),
-                       url(r'^create_note$', 'bars.notes.views.create_note'),
                        url(r'^edit_note$', 'bars.notes.views.edit_note'),
                        url(r'^delete_note$', 'bars.notes.views.delete_note'),
 
