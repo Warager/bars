@@ -73,6 +73,8 @@ def signout(request):
 def notes_list(request):
     """
     """
+    if not request.user.is_authenticated():
+        return redirect('/')
     user = request.user
     data = {
         'user': user.username
