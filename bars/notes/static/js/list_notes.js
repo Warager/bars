@@ -8,11 +8,6 @@ Ext.onReady(function () {
 
   Ext.QuickTips.init();
 
-  var url = {
-      local:  '/static/notes.php',  // static data file
-      remote: '/get_notes'
-  };
-
   var encode = true;
 
   var local = false;
@@ -21,7 +16,7 @@ Ext.onReady(function () {
     // store configs
     autoLoad: true,
     autoDestroy: true,
-    url: (local ? url.local : url.remote),
+    url: '/get_notes',
     storeId: 'myStore',
     // reader configs
     root: 'row',
@@ -47,7 +42,6 @@ Ext.onReady(function () {
       {
         type: 'string',
         dataIndex: 'header'
-//        disabled: true
       },
       {
         type: 'numeric',
@@ -61,7 +55,6 @@ Ext.onReady(function () {
         type: 'list',
         dataIndex: 'category',
         options: ['Notice', 'Reminder', 'Reference', 'TODO']
-//        phpMode: true
       },
       {
         type: 'boolean',
